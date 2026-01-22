@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "GST Decision Review & Foresight Engine - Frontend UI",
   "private": true,
-  "homepage": "https://yourusername.github.io/gst-decision-foresight-ui",
+  "homepage": "https://vijayshagunkumar.github.io/gst-decision-foresight",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -43,3 +43,4 @@
     ]
   }
 }
+
