@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Decision Review & Foresight Engine</title>
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f7fafc;
+            margin: 0;
+            color: #2d3748;
+        }
+
+        header {
+            background: #1a365d;
+            color: #fff;
+            padding: 16px 24px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #1a365d;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e0;
+        }
+
+        button {
+            background: #2d5aa0;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #244b86;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .high { background: #c53030; }
+        .medium { background: #d69e2e; }
+        .low { background: #38a169; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #9b2c2c;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 16px;
+            border-left: 4px solid #e53e3e;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1px;
+            margin: 20px 0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            font-weight: 500;
+            color: #718096;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .tab:hover {
+            background: #edf2f7;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2d5aa0;
+            border-color: #e2e8f0;
+            border-bottom: 2px solid white;
+            position: relative;
+            top: 1px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Rule Explorer */
+        .rule-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .rule-id {
+            font-family: monospace;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .rule-domain {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #4299e1;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .rule-title {
+            margin: 8px 0;
+            color: #1a365d;
+        }
+
+        .rule-description {
+            color: #718096;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .rule-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .rule-tag {
+            padding: 4px 8px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>GST Decision Review & Foresight Engine</h1>
+</header>
+
+<div class="container">
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('decision')">Decision Review</div>
+        <div class="tab" onclick="showTab('rules')">Rule Explorer</div>
+    </div>
+
+    <!-- Decision Review Tab -->
+    <div id="decisionTab" class="tab-content active">
+        <div class="card">
+            <h2>Transaction Facts</h2>
+
+            <label>Supply To</label>
+            <select id="supplyTo">
+                <option value="SEZ_UNIT_OR_DEVELOPER">SEZ Unit / Developer</option>
+                <option value="DTA">Domestic Tariff Area</option>
+            </select>
+
+            <label>Supply Purpose</label>
+            <select id="purpose">
+                <option value="AUTHORIZED_OPERATIONS">Authorized Operations</option>
+                <option value="OTHER">Other</option>
+            </select>
+
+            <label>
+                <input type="checkbox" id="exemption" checked />
+                Exemption Claimed
+            </label>
+
+            <button onclick="evaluateGST()" id="evaluateBtn">
+                Evaluate GST Risk
+            </button>
+
+            <div id="error" class="error" style="display: none;"></div>
+        </div>
+
+        <div class="card" id="result" style="display:none;">
+            <h2>Decision Outcome</h2>
+
+            <p>
+                <strong>Matched Rules:</strong>
+                <span id="matchedRules"></span>
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rule ID</th>
+                        <th>Risk</th>
+                        <th>Reason</th>
+                        <th>Law</th>
+                    </tr>
+                </thead>
+                <tbody id="rulesTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Rule Explorer Tab -->
+    <div id="rulesTab" class="tab-content">
+        <div class="card">
+            <h2>Rule Database</h2>
+            <p>Explore the rules powering the GST decision engine.</p>
+            
+            <div id="rulesList">
+                <div class="rule-card">
+                    <div>
+                        <span class="rule-id">GST-EXEMPT-001</span>
+                        <span class="rule-domain" style="background: #3182CE;">EXEMPTION</span>
+                    </div>
+                    <h3 class="rule-title">SEZ Authorized Operations Exemption</h3>
+                    <p class="rule-description">Supplies to SEZ unit/developer for authorized operations are exempt from GST.</p>
+                    <div class="rule-tags">
+                        <span class="rule-tag">SEZ</span>
+                        <span class="rule-tag">Exemption</span>
+                        <span class="rule-tag">Authorized Operations</span>
+                    </div>
+                </div>
+
+                <div class="rule-card">
+                    <div>
+                        <span class="rule-id">GST-COMP-002</span>
+                        <span class="rule-domain" style="background: #E53E3E;">COMPLIANCE</span>
+                    </div>
+                    <h3 class="rule-title">DTA Supply with Exemption Claim</h3>
+                    <p class="rule-description">Supply to DTA with exemption claim requires verification.</p>
+                    <div class="rule-tags">
+                        <span class="rule-tag">DTA</span>
+                        <span class="rule-tag">Verification</span>
+                        <span class="rule-tag">Compliance</span>
+                    </div>
+                </div>
+
+                <div class="rule-card">
+                    <div>
+                        <span class="rule-id">GST-TAX-003</span>
+                        <span class="rule-domain" style="background: #38A169;">TAXABILITY</span>
+                    </div>
+                    <h3 class="rule-title">Other Purpose Supply Taxability</h3>
+                    <p class="rule-description">Supply for purposes other than authorized operations attracts standard GST rates.</p>
+                    <div class="rule-tags">
+                        <span class="rule-tag">Taxability</span>
+                        <span class="rule-tag">Standard Rate</span>
+                        <span class="rule-tag">Input Credit</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab management
+    function showTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Show selected tab
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // GST Evaluation Function
+    async function evaluateGST() {
+        const btn = document.getElementById('evaluateBtn');
+        const originalText = btn.innerHTML;
+        const errorDiv = document.getElementById('error');
+        
+        // Show loading
+        btn.innerHTML = '<span class="loading"></span>Evaluating...';
+        btn.disabled = true;
+        errorDiv.style.display = 'none';
+        
+        try {
+            const body = {
+                version: "v1.0.0",
+                facts: {
+                    supply_to: document.getElementById("supplyTo").value,
+                    exemption_claimed: document.getElementById("exemption").checked,
+                    supply_purpose: document.getElementById("purpose").value
+                }
+            };
+
+            const res = await fetch(
+                "https://promptcraft-java-backend-production.up.railway.app/api/gst/evaluate",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body)
+                }
+            );
+
+            if (!res.ok) {
+                throw new Error(`API Error: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            // Display results
+            document.getElementById("result").style.display = "block";
+            document.getElementById("matchedRules").innerText = data.matchedRules;
+
+            const table = document.getElementById("rulesTable");
+            table.innerHTML = "";
+
+            data.results.forEach(r => {
+                const row = `
+                    <tr>
+                        <td>${r.ruleId}</td>
+                        <td><span class="badge ${r.riskLevel.toLowerCase()}">${r.riskLevel}</span></td>
+                        <td>${r.riskReason}</td>
+                        <td>${r.lawReference.domain}</td>
+                    </tr>
+                `;
+                table.insertAdjacentHTML("beforeend", row);
+            });
+
+        } catch (error) {
+            errorDiv.textContent = `Error: ${error.message}. Please check your connection.`;
+            errorDiv.style.display = 'block';
+            console.error('Evaluation error:', error);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Test connection on load
+    window.addEventListener('load', async () => {
+        try {
+            const res = await fetch(
+                "https://promptcraft-java-backend-production.up.railway.app/api/gst/evaluate",
+                { method: 'OPTIONS' }
+            );
+            console.log('Backend connection:', res.ok ? 'OK' : 'Failed');
+        } catch (error) {
+            console.warn('Backend might be unavailable:', error.message);
+        }
+    });
+</script>
+
+</body>
+</html>
