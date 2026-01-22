@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'; // CHANGED: HashRouter
 import './styles/main.css';
 import DecisionReview from './pages/DecisionReview';
 import RuleExplorer from './pages/RuleExplorer';
@@ -28,23 +28,6 @@ const Navigation: React.FC = () => {
           >
             Rule Explorer
           </Link>
-          <Link 
-            to="/analytics" 
-            className={`nav-link ${location.pathname === '/analytics' ? 'active' : ''}`}
-          >
-            Analytics
-          </Link>
-          <Link 
-            to="/audit" 
-            className={`nav-link ${location.pathname === '/audit' ? 'active' : ''}`}
-          >
-            Audit Trail
-          </Link>
-        </div>
-        
-        <div className="nav-actions">
-          <span className="nav-version">v1.0.0</span>
-          <button className="nav-help">?</button>
         </div>
       </div>
     </nav>
@@ -53,7 +36,7 @@ const Navigation: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <Router> {/* HashRouter automatically works with GitHub Pages */}
       <div className="app">
         <Navigation />
         <header>
@@ -69,10 +52,7 @@ const App: React.FC = () => {
           <div className="footer-content">
             <p>© 2024 GST Decision Engine. For compliance use only.</p>
             <div className="footer-links">
-              <a href="/privacy">Privacy</a>
-              <a href="/terms">Terms</a>
-              <a href="/contact">Contact</a>
-              <a href="/docs">Documentation</a>
+              <span>v1.0.0</span>
             </div>
           </div>
         </footer>
